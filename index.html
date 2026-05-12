@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How Airplane Seat Space Has Shrunk</title>
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <!-- GSAP for scroll animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.1/ScrollTrigger.min.js"></script>
+
+    <!-- Sketchfab Viewer API -->
+    <script type="text/javascript" src="https://static.sketchfab.com/api/sketchfab-viewer-1.12.1.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #dcdcdc;
+            color: #222;
+            font-size: 20px;
+            font-family: 'Lora', Georgia, serif;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* Content container */
+        .content {
+            max-width: 640px;
+            margin: auto;
+            padding: 0 1em;
+        }
+
+        /* Header styles */
+        .header {
+            padding: 4em 0 2em 0;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            line-height: 1.1;
+            margin-bottom: 0.5em;
+        }
+
+        .subhead {
+            font-size: 1.3em;
+            color: #555;
+        }
+
+        .byline {
+            text-align: center;
+            color: #666;
+            padding-bottom: 2em;
+        }
+
+        p {
+            line-height: 1.6;
+            padding-bottom: 1.2em;
+        }
+
+        a {
+            color: #f05349;
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 0.5em;
+            margin-top: 1em;
+        }
+
+        /* Scrolly container */
+        .scrolly-container {
+            position: relative;
+            margin-bottom: 1.2em;
+        }
+
+        .sticky-thing {
+            position: sticky;
+            top: 0;
+            z-index: -1;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .sticky-thing iframe {
+            width: 100vw;
+            height: 100vh;
+            border: 0;
+        }
+
+        /* Caption box - centered */
+        .caption {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(60, 60, 60, 0.9);
+            color: white;
+            padding: 1.5rem 2rem;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .caption * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .caption h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.4rem;
+            color: #f05349;
+        }
+
+        .caption p {
+            font-size: 1rem;
+            line-height: 1.4;
+            padding-bottom: 0;
+        }
+
+        /* Blue heading for 737 caption */
+        #caption-737 h3 {
+            color: #4a9eff;
+        }
+
+        /* Scroll height controls - adjust these to change scroll duration */
+        #scroller-1956 {
+            height: 600vh;
+        }
+
+        #scroller-737 {
+            height: 600vh;
+        }
+
+        .scrolly-overlay {
+            pointer-events: none;
+        }
+
+        /* Section divider */
+        .section-break {
+            padding: 3em 0;
+            text-align: center;
+        }
+
+        .section-break h2 {
+            color: #f05349;
+        }
+
+        /* Footer */
+        .footer {
+            background: #c8c8c8;
+            color: #333;
+            padding: 3em 0;
+            margin-top: 4em;
+        }
+
+        .footer h3 {
+            margin-top: 1.5em;
+            margin-bottom: 0.5em;
+            color: #333;
+        }
+
+        .footer h3:first-child {
+            margin-top: 0;
+        }
+
+        .footer p {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        /* Hide Sketchfab hand/hint overlay */
+        iframe[id^="viewer"] + .sketchfab-embed-wrapper,
+        .orbit-hint,
+        [class*="hint"],
+        [class*="orbit"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+        }
+
+        /* Scroll-controlled image slider */
+        .image-slider-container {
+            position: relative;
+            height: 300vh; /* Controls how long the scroll "locks" */
+        }
+
+        .image-slider-sticky {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .image-slider-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            aspect-ratio: 16 / 10;
+        }
+
+        .slider-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slider-image-before {
+            z-index: 2;
+            clip-path: inset(0 0 0 0); /* Will be animated */
+        }
+
+        .slider-image-after {
+            z-index: 1;
+        }
+
+        .slider-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: white;
+            box-shadow: 0 0 8px rgba(0,0,0,0.5);
+            z-index: 3;
+            left: 100%; /* Will be animated */
+        }
+
+        .slider-label {
+            position: absolute;
+            top: 15px;
+            padding: 6px 14px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            z-index: 4;
+        }
+
+        .slider-label-before {
+            left: 15px;
+        }
+
+        .slider-label-after {
+            right: 15px;
+            opacity: 0; /* Will fade in as revealed */
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 640px) {
+            body {
+                font-size: 18px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .caption {
+                max-width: 280px;
+                padding: 1rem 1.2rem;
+            }
+
+            .image-slider-wrapper {
+                width: 95%;
+                aspect-ratio: 4 / 3;
+            }
+
+            .slider-label {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header content">
+        <h1>How Airplane Seat Space Has Shrunk</h1>
+        <p class="subhead">Data shows a steady decline in seat pitch and width over the past 50 years</p>
+    </header>
+
+    <div class="content">
+        <div class="byline">
+            <p>By Kylie Clifton</p>
+        </div>
+
+        <p>Intro paragraph goes here. Set the scene - what was flying like in the golden age of aviation?</p>
+
+        <p>In 1956, boarding a plane meant something different. Scroll down to step inside a Super Constellation and see for yourself.</p>
+    </div>
+
+    <!-- 3D Scrolly Section 1: 1956 Super Constellation -->
+    <div id="scroller-1956" class="scrolly-container">
+        <div class="sticky-thing">
+            <iframe src="" id="viewer-1956"
+                allow="autoplay; fullscreen; xr-spatial-tracking"
+                allowfullscreen
+                mozallowfullscreen="true"
+                webkitallowfullscreen="true">
+            </iframe>
+            <div class="caption" id="caption-1956">
+                <h3></h3>
+                <p></p>
+            </div>
+        </div>
+        <div class="scrolly-overlay"></div>
+    </div>
+
+    <div class="content section-break">
+        <h2>Fast forward to today...</h2>
+        <p>Airlines have squeezed more seats into the same space. The Boeing 737 MAX represents the modern reality of air travel. Scroll to experience the difference.</p>
+    </div>
+
+    <!-- 3D Scrolly Section 2: Boeing 737 MAX -->
+    <div id="scroller-737" class="scrolly-container">
+        <div class="sticky-thing">
+            <iframe src="" id="viewer-737"
+                allow="autoplay; fullscreen; xr-spatial-tracking"
+                allowfullscreen
+                mozallowfullscreen="true"
+                webkitallowfullscreen="true">
+            </iframe>
+            <div class="caption" id="caption-737">
+                <h3></h3>
+                <p></p>
+            </div>
+        </div>
+        <div class="scrolly-overlay"></div>
+    </div>
+
+    <div class="content">
+        <p>Text after the 737 viewer - the contrast is stark. What changed?</p>
+
+        <p>Deregulation in 1978 sparked fierce competition. Airlines cut costs everywhere they could - and seat space became an easy target.</p>
+    </div>
+
+    <!-- Scroll-Controlled Image Slider 1 -->
+    <div class="content section-break">
+        <h2>Then vs. Now</h2>
+        <p>Scroll to reveal the comparison.</p>
+    </div>
+
+    <div id="image-slider-1" class="image-slider-container">
+        <div class="image-slider-sticky">
+            <div class="image-slider-wrapper">
+                <img src="image-a.jpg" alt="Before" class="slider-image slider-image-before">
+                <img src="image-b.jpg" alt="After" class="slider-image slider-image-after">
+                <div class="slider-label slider-label-before">Before</div>
+                <div class="slider-label slider-label-after">After</div>
+                <div class="slider-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll-Controlled Image Slider 2 -->
+    <div class="content section-break">
+        <h2>Another Comparison</h2>
+        <p>Keep scrolling to see more.</p>
+    </div>
+
+    <div id="image-slider-2" class="image-slider-container">
+        <div class="image-slider-sticky">
+            <div class="image-slider-wrapper">
+                <img src="image-c.jpg" alt="Before" class="slider-image slider-image-before">
+                <img src="image-d.jpg" alt="After" class="slider-image slider-image-after">
+                <div class="slider-label slider-label-before">Before</div>
+                <div class="slider-label slider-label-after">After</div>
+                <div class="slider-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Viz Section (placeholder) -->
+    <section class="content">
+        <h2>The Numbers</h2>
+        <p>[Data visualization will go here]</p>
+    </section>
+
+    <!-- Footer / Methodology -->
+    <footer class="footer">
+        <div class="content">
+            <h3>Methodology</h3>
+            <p>[Your methodology paragraph here]</p>
+
+            <h3>Credits</h3>
+            <p>3D Models via Sketchfab (CC Attribution):</p>
+            <p>"Annotated Interior 1956 Super Constellation"</p>
+            <p>"Boeing 737 MAX"</p>
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        // Register GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Viewer settings (shared)
+        const viewerSettings = {
+            animation_autoplay: 0,
+            camera: 0,
+            autostart: 1,
+            preload: 1,
+            ui_controls: 0,
+            ui_inspector: 0,
+            scrollwheel: 0,
+            ui_stop: 0,
+            double_click: 0,
+            ui_hint: 0,
+            ui_loading: 0,
+            annotations_visible: 0,
+            ui_infos: 0,
+            ui_watermark: 0,
+            ui_ar: 0,
+            ui_help: 0,
+            ui_settings: 0,
+            ui_vr: 0,
+            ui_fullscreen: 0,
+            ui_annotations: 0,
+            orbit_constraint_pitch_down: 0,
+            orbit_constraint_pitch_up: 0
+        };
+
+        // Function to initialize scrollytelling for a viewer
+        function initScrollyViewer(iframeId, scrollerId, captionId, uid) {
+            const iframe = document.getElementById(iframeId);
+            const scrollElement = document.getElementById(scrollerId);
+            const caption = document.getElementById(captionId);
+            const client = new Sketchfab(iframe);
+
+            client.init(uid, {
+                success: function onSuccess(api) {
+                    api.start();
+                    api.addEventListener('viewerready', function() {
+                        console.log(iframeId + ' viewer ready');
+                        initAnimation(api, scrollElement, caption);
+                    });
+                },
+                error: function onError() {
+                    console.log(iframeId + ' viewer error');
+                },
+                ...viewerSettings
+            });
+        }
+
+        // Function to set up scroll animation from annotations
+        function initAnimation(api, scrollElement, caption) {
+            api.getAnnotationList((err, annotations) => {
+                if (err || !annotations || annotations.length === 0) {
+                    console.log('No annotations found');
+                    caption.style.display = 'none';
+                    return;
+                }
+
+                // Setup the first point
+                const values = {
+                    ex: annotations[0].eye[0],
+                    ey: annotations[0].eye[1],
+                    ez: annotations[0].eye[2],
+                    tx: annotations[0].target[0],
+                    ty: annotations[0].target[1],
+                    tz: annotations[0].target[2],
+                    index: 0,
+                };
+
+                api.setCameraLookAt(annotations[0].eye, annotations[0].target, 0);
+                caption.querySelector('h3').innerText = annotations[0].name || '';
+                caption.querySelector('p').innerText = annotations[0].content?.raw || '';
+
+                // Create GSAP timeline
+                const timeline = gsap.timeline({});
+
+                // Add each annotation point to the timeline
+                annotations.forEach((annotation, i) => {
+                    if (i !== 0) {
+                        api.hideAnnotation(i);
+                        const e = annotation.eye;
+                        const t = annotation.target;
+                        timeline.to(values, {
+                            ex: e[0],
+                            ey: e[1],
+                            ez: e[2],
+                            tx: t[0],
+                            ty: t[1],
+                            tz: t[2],
+                            index: i,
+                            duration: 1,
+                        });
+                    }
+                });
+
+                // Setup ScrollTrigger
+                ScrollTrigger.create({
+                    trigger: scrollElement,
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: true,
+                    animation: timeline,
+                    toggleActions: "play none reverse none",
+                    onUpdate: self => {
+                        const currentIndex = self.direction === 1 ? Math.floor(values.index) : Math.ceil(values.index);
+                        caption.querySelector('h3').innerText = annotations[currentIndex].name || '';
+                        caption.querySelector('p').innerText = annotations[currentIndex].content?.raw || '';
+                        api.setCameraLookAt([values.ex, values.ey, values.ez], [values.tx, values.ty, values.tz], 0);
+                    },
+                });
+            });
+        }
+
+        // Initialize both viewers
+        // 1956 Super Constellation (annotated)
+        initScrollyViewer('viewer-1956', 'scroller-1956', 'caption-1956', '7da356a062804b91a8e8851b009265fe');
+
+        // Boeing 737 MAX
+        initScrollyViewer('viewer-737', 'scroller-737', 'caption-737', '6a65064c9aa949ad9f2587b16ee65ad3');
+
+        // ===== Scroll-controlled Image Sliders =====
+        function initImageSlider(containerId) {
+            try {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+
+                const beforeImage = container.querySelector('.slider-image-before');
+                const sliderLine = container.querySelector('.slider-line');
+                const afterLabel = container.querySelector('.slider-label-after');
+
+                if (!beforeImage || !sliderLine || !afterLabel) return;
+
+                // Animate from fully showing "before" to fully showing "after"
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: container,
+                        start: "top top",
+                        end: "bottom bottom",
+                        scrub: 0.5, // Smooth scrubbing
+                    }
+                });
+
+                // Reveal animation: clip the "before" image from right to left
+                tl.to(beforeImage, {
+                    clipPath: "inset(0 100% 0 0)",
+                    ease: "none",
+                    duration: 1
+                }, 0);
+
+                // Move the slider line
+                tl.to(sliderLine, {
+                    left: "0%",
+                    ease: "none",
+                    duration: 1
+                }, 0);
+
+                // Fade in the "after" label as it's revealed
+                tl.to(afterLabel, {
+                    opacity: 1,
+                    ease: "none",
+                    duration: 0.3
+                }, 0.5);
+            } catch (e) {
+                console.log('Image slider init error:', e);
+            }
+        }
+
+        // Initialize both image sliders
+        initImageSlider('image-slider-1');
+        initImageSlider('image-slider-2');
+    </script>
+</body>
+
+</html>
