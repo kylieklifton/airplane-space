@@ -652,12 +652,29 @@
             });
         }
 
-        // Initialize both viewers
-        // 1956 Super Constellation (annotated)
-        initScrollyViewer('viewer-1956', 'scroller-1956', 'caption-1956', '7da356a062804b91a8e8851b009265fe');
+        // Check if mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
 
-        // Boeing 737 MAX
-        initScrollyViewer('viewer-737', 'scroller-737', 'caption-737', '6a65064c9aa949ad9f2587b16ee65ad3');
+        // Initialize 3D viewers only on desktop (too heavy for mobile)
+        if (!isMobile) {
+            // 1956 Super Constellation (annotated)
+            initScrollyViewer('viewer-1956', 'scroller-1956', 'caption-1956', '7da356a062804b91a8e8851b009265fe');
+
+            // Boeing 737 MAX
+            initScrollyViewer('viewer-737', 'scroller-737', 'caption-737', '6a65064c9aa949ad9f2587b16ee65ad3');
+        } else {
+            // Show fallback on mobile
+            const sections = ['scroller-1956', 'scroller-737'];
+            const messages = [
+                '3D model: 1956 Lockheed Super Constellation cabin. View on desktop for the full interactive experience.',
+                '3D model: Boeing 737 MAX cabin. View on desktop for the full interactive experience.'
+            ];
+            sections.forEach((id, i) => {
+                const el = document.getElementById(id);
+                el.style.height = 'auto';
+                el.innerHTML = '<div style="background:#333;color:#fff;padding:3em 2em;text-align:center;"><p style="padding:0;margin:0;">' + messages[i] + '</p></div>';
+            });
+        }
 
         // ===== Scroll-controlled Image Sliders =====
         function initImageSlider(containerId) {
