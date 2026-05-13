@@ -42,7 +42,7 @@
             padding: 0 1em;
         }
 
-        /* Header styles */
+        /* Header styles - for non-hero headers */
         .header {
             padding: 4em 0 2em 0;
             text-align: center;
@@ -59,10 +59,70 @@
             color: #555;
         }
 
-        .byline {
-            text-align: center;
-            color: #666;
-            padding-bottom: 2em;
+
+        .hero-overlay .byline {
+            margin-top: 0;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.85);
+        }
+
+        /* Full-bleed hero with overlay */
+        .hero-section {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+        }
+
+        .hero-section img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.7));
+            padding: 4em 2em 3em 2em;
+            color: white;
+        }
+
+        .hero-overlay h1,
+        .hero-overlay .subhead,
+        .hero-overlay .byline {
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .hero-overlay h1 {
+            margin-bottom: 0.4em;
+            font-size: 3em;
+            line-height: 1.1;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .hero-overlay .subhead {
+            margin-bottom: 0.6em;
+            font-size: 1.4em;
+            color: #eee;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero-caption {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.7);
         }
 
         p {
@@ -205,6 +265,7 @@
             top: 0;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             overflow: hidden;
@@ -227,12 +288,12 @@
         }
 
         .slider-image-before {
-            z-index: 2;
-            clip-path: inset(0 0 0 0); /* Will be animated */
+            z-index: 1;
         }
 
         .slider-image-after {
-            z-index: 1;
+            z-index: 2;
+            clip-path: inset(0 100% 0 0); /* Will be animated left to right */
         }
 
         .slider-line {
@@ -243,29 +304,22 @@
             background: white;
             box-shadow: 0 0 8px rgba(0,0,0,0.5);
             z-index: 3;
-            left: 100%; /* Will be animated */
+            left: 0%; /* Will be animated */
         }
 
-        .slider-label {
-            position: absolute;
-            top: 15px;
-            padding: 6px 14px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            font-size: 0.85rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            z-index: 4;
+        .slider-headline {
+            text-align: center;
+            font-size: 1rem;
+            color: #333;
+            margin-bottom: 1rem;
+            padding: 0 1rem;
+            max-width: 600px;
         }
 
-        .slider-label-before {
-            left: 15px;
-        }
-
-        .slider-label-after {
-            right: 15px;
-            opacity: 0; /* Will fade in as revealed */
+        /* Smaller, square slider for C/D images */
+        #image-slider-2 .image-slider-wrapper {
+            max-width: 500px;
+            aspect-ratio: 1 / 1;
         }
 
         /* Mobile adjustments */
@@ -278,6 +332,22 @@
                 font-size: 2em;
             }
 
+            .hero-section {
+                min-height: 500px;
+            }
+
+            .hero-overlay h1 {
+                font-size: 1.8em;
+            }
+
+            .hero-overlay .subhead {
+                font-size: 1.1em;
+            }
+
+            .hero-overlay {
+                padding: 3em 1.5em 2em 1.5em;
+            }
+
             .caption {
                 max-width: 280px;
                 padding: 1rem 1.2rem;
@@ -285,32 +355,51 @@
 
             .image-slider-wrapper {
                 width: 95%;
-                aspect-ratio: 4 / 3;
             }
 
-            .slider-label {
-                font-size: 0.75rem;
-                padding: 4px 10px;
+            .slider-headline {
+                font-size: 0.9rem;
+                padding: 8px 14px;
+            }
+
+            #image-slider-2 .image-slider-wrapper {
+                max-width: 90%;
             }
         }
     </style>
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header content">
-        <h1>How Airplane Seat Space Has Shrunk</h1>
-        <p class="subhead">Data shows a steady decline in seat pitch and width over the past 50 years</p>
-    </header>
-
-    <div class="content">
-        <div class="byline">
-            <p>By Kylie Clifton</p>
+    <!-- Full-bleed Hero -->
+    <section class="hero-section">
+        <img src="Images/spirit-hero.webp" alt="A yellow Spirit Airlines aircraft in flight">
+        <div class="hero-overlay">
+            <h1>Spirit Crammed 193 Seats Per Flight. Then It Collapsed.</h1>
+            <p class="subhead">Airlines have been adding seats for decades. Federal data shows how far they pushed.</p>
+            <p class="byline">By Kylie Clifton</p>
         </div>
+    </section>
 
-        <p>Intro paragraph goes here. Set the scene - what was flying like in the golden age of aviation?</p>
+    <div class="content" style="padding-top: 3em;">
+        <p>On May 2, Spirit Airlines shut down.</p>
 
-        <p>In 1956, boarding a plane meant something different. Scroll down to step inside a Super Constellation and see for yourself.</p>
+        <p>The ultra low-cost carrier had filed for bankruptcy twice in less than two years. About 17,000 workers lost their jobs, <a href="https://apnews.com/article/spirit-airlines-trump-bailout-bankruptcy-37a4818e1b71c0905d022f669d85948c" target="_blank">according to the Associated Press</a>.</p>
+
+        <p>Spirit was known for packing passengers in. Federal flight data shows the average Spirit flight carried 193 seats in 2025, more than Delta, United or American.</p>
+
+        <p>Only Frontier, another budget carrier, fit more: 209 seats per flight.</p>
+
+        <p>Airlines have been adding seats for decades. Spirit and Frontier just pushed the furthest. The numbers are stark: in 1990, the average Boeing 737 carried 122 passengers. By 2025, that same aircraft family averaged 164 seats per flight.</p>
+
+        <p>The transformation happened across the industry. Southwest, once a low-cost pioneer, went from 130 seats per flight in 1990 to 161 in 2025. Delta climbed from 150 to 171. United from 152 to 177.</p>
+
+        <p>JetBlue was the only airline that bucked the trend, holding relatively steady over the years.</p>
+
+        <h2>Air travel did not always look like this.</h2>
+
+        <p>In 1956, the Lockheed Super Constellation carried between 47 and 106 passengers across the country. Two years later, Boeing introduced the 707, America's first successful commercial jet. Pan Am's inaugural flight carried 111 passengers from New York to Paris.</p>
+
+        <p>The jet age had begun. Scroll down to see what flying looked like before the squeeze.</p>
     </div>
 
     <!-- 3D Scrolly Section 1: 1956 Super Constellation -->
@@ -331,8 +420,8 @@
     </div>
 
     <div class="content section-break">
-        <h2>Fast forward to today...</h2>
-        <p>Airlines have squeezed more seats into the same space. The Boeing 737 MAX represents the modern reality of air travel. Scroll to experience the difference.</p>
+        <h2>Then jets arrived.</h2>
+        <p>The Super Constellation was as good as propeller travel got. Then jets arrived. And the race for more seats started. Scroll through a modern 737 MAX cabin.</p>
     </div>
 
     <!-- 3D Scrolly Section 2: Boeing 737 MAX -->
@@ -353,69 +442,103 @@
     </div>
 
     <div class="content">
-        <p>Text after the 737 viewer - the contrast is stark. What changed?</p>
+        <h2>Spirit and Frontier pushed the furthest.</h2>
 
-        <p>Deregulation in 1978 sparked fierce competition. Airlines cut costs everywhere they could - and seat space became an easy target.</p>
+        <p>In 2025, Frontier averaged 209 seats per flight. Spirit averaged 193. Both flew the same Airbus A320 family as other carriers, but configured them with thinner seats, less legroom and no recline.</p>
+
+        <p>Delta averaged 171 seats per flight. United, 177. American, 174.</p>
+
+        <p>Every major U.S. airline added seats over the past 35 years. JetBlue was the only exception, staying relatively flat since it launched in 2000.</p>
+
+        <p>The ultra low-cost model that Spirit pioneered, cramming passengers in to keep ticket prices down, proved fragile. When travel demand dropped, all those extra seats flew empty.</p>
+    </div>
+
+    <!-- Airlines Chart -->
+    <section class="content">
+        <iframe title="Ultra Low-Cost Carriers Pack the Most Seats" aria-label="Small multiple line chart" id="datawrapper-chart-MoNaK" src="https://datawrapper.dwcdn.net/MoNaK/1/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="518" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+    </section>
+
+    <div class="content" style="padding-top: 2em;">
+        <h2>The aircraft tell the same story.</h2>
+
+        <p>The Boeing 737 has been flying since 1968. It is the best-selling commercial jet ever made.</p>
+
+        <p>In 1990, the average 737 flight had 122 seats. By 2025, that number hit 164. That is 42 more seats, a 34 percent increase.</p>
+
+        <p>Some of that comes from larger 737 variants replacing older ones. The original 737-100 carried about 100 passengers. The 737 MAX 10, the latest model, can fit up to 230 in a single-class layout.</p>
+
+        <p>Some comes from tighter cabin layouts. The data captures both. It counts total available seats divided by total departures, meaning it reflects whatever configuration each airline chooses to fly.</p>
+    </div>
+
+    <!-- Boeing Chart -->
+    <section class="content">
+        <iframe title="The Boeing 737 Keeps Getting More Crowded" aria-label="Line chart" id="datawrapper-chart-NY0oT" src="https://datawrapper.dwcdn.net/NY0oT/2/" scrolling="no" frameborder="0" style="width: 0; min-width: 100% !important; border: none;" height="435" data-external="1"></iframe><script type="text/javascript">window.addEventListener("message",function(a){if(void 0!==a.data["datawrapper-height"]){var e=document.querySelectorAll("iframe");for(var t in a.data["datawrapper-height"])for(var r,i=0;r=e[i];i++)if(r.contentWindow===a.source){var d=a.data["datawrapper-height"][t]+"px";r.style.height=d}}});</script>
+    </section>
+
+    <div class="content" style="padding-top: 2em; padding-bottom: 1em;">
+        <p>The photos tell the same story. Scroll to compare airplane aisles and legroom six decades apart.</p>
     </div>
 
     <!-- Scroll-Controlled Image Slider 1 -->
-    <div class="content section-break">
-        <h2>Then vs. Now</h2>
-        <p>Scroll to reveal the comparison.</p>
-    </div>
-
     <div id="image-slider-1" class="image-slider-container">
         <div class="image-slider-sticky">
+            <p class="slider-headline">The aisle, 1956 vs. 2017</p>
             <div class="image-slider-wrapper">
-                <img src="image-a.jpg" alt="Before" class="slider-image slider-image-before">
-                <img src="image-b.jpg" alt="After" class="slider-image slider-image-after">
-                <div class="slider-label slider-label-before">Before</div>
-                <div class="slider-label slider-label-after">After</div>
+                <img src="Images/A.jpeg" alt="1956 airplane aisle" class="slider-image slider-image-before">
+                <img src="Images/B.jpeg" alt="2017 airplane aisle" class="slider-image slider-image-after">
                 <div class="slider-line"></div>
             </div>
         </div>
+    </div>
+
+    <div class="content" style="padding: 2em 0;">
+        <p>The aisle got narrower. The seats got closer. Look at the space between rows.</p>
     </div>
 
     <!-- Scroll-Controlled Image Slider 2 -->
-    <div class="content section-break">
-        <h2>Another Comparison</h2>
-        <p>Keep scrolling to see more.</p>
-    </div>
-
     <div id="image-slider-2" class="image-slider-container">
         <div class="image-slider-sticky">
+            <p class="slider-headline">The space between seats, then and now</p>
             <div class="image-slider-wrapper">
-                <img src="image-c.jpg" alt="Before" class="slider-image slider-image-before">
-                <img src="image-d.jpg" alt="After" class="slider-image slider-image-after">
-                <div class="slider-label slider-label-before">Before</div>
-                <div class="slider-label slider-label-after">After</div>
+                <img src="Images/C.jpeg" alt="1950s airplane legroom" class="slider-image slider-image-before">
+                <img src="Images/D.jpeg" alt="Modern airplane legroom" class="slider-image slider-image-after">
                 <div class="slider-line"></div>
             </div>
         </div>
     </div>
 
-    <!-- Data Viz Section (placeholder) -->
+    <!-- Closing section -->
     <section class="content">
-        <h2>The Numbers</h2>
-        <p>[Data visualization will go here]</p>
+        <h2>The jets that vanished.</h2>
+
+        <p>Not every Boeing has followed the same path.</p>
+
+        <p>The 747 averaged 326 seats per flight in 1990. By 2025, that dropped to 37. Most 747s now fly cargo, not passengers. United retired its last passenger 747 in 2017. Delta followed in 2020.</p>
+
+        <p>The 767 and 757 are on the way out. Both peaked in the 1990s and early 2000s. Airlines have been replacing them with more fuel-efficient models like the 787 Dreamliner.</p>
+
+        <p>The 737 keeps flying. And it keeps getting fuller.</p>
+
+        <p>Spirit is gone. Frontier is still here. The question is whether cramming more passengers onto planes remains a viable business strategy, or whether Spirit's collapse signals the limit of how far airlines can push.</p>
     </section>
 
     <!-- Footer / Methodology -->
     <footer class="footer">
         <div class="content">
             <h3>Methodology</h3>
-            <p>[Your methodology paragraph here]</p>
+            <p>Data from the Bureau of Transportation Statistics, U.S. Department of Transportation. T-100 Domestic Segment (All Carriers), 1990-2025.</p>
+            <p>Average seats per departure calculated by dividing total available seats by total departures, grouped by airline or aircraft type and year.</p>
 
-            <h3>Credits</h3>
-            <p>3D Models via Sketchfab (CC Attribution):</p>
-            <p>"Annotated Interior 1956 Super Constellation"</p>
-            <p>"Boeing 737 MAX"</p>
+            <p><a href="https://github.com/kylieklifton/airplane-space" target="_blank">View GitHub Repo</a></p>
         </div>
     </footer>
 
     <script type="text/javascript">
         // Register GSAP ScrollTrigger
         gsap.registerPlugin(ScrollTrigger);
+
+        // Wait for page to fully load before initializing
+        window.addEventListener('load', function() {
 
         // Viewer settings (shared)
         const viewerSettings = {
@@ -542,42 +665,24 @@
                 const container = document.getElementById(containerId);
                 if (!container) return;
 
-                const beforeImage = container.querySelector('.slider-image-before');
+                const afterImage = container.querySelector('.slider-image-after');
                 const sliderLine = container.querySelector('.slider-line');
-                const afterLabel = container.querySelector('.slider-label-after');
 
-                if (!beforeImage || !sliderLine || !afterLabel) return;
+                if (!afterImage || !sliderLine) return;
 
-                // Animate from fully showing "before" to fully showing "after"
-                const tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: container,
-                        start: "top top",
-                        end: "bottom bottom",
-                        scrub: 0.5, // Smooth scrubbing
+                // Use onUpdate for smooth clip-path animation
+                ScrollTrigger.create({
+                    trigger: container,
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: true,
+                    onUpdate: (self) => {
+                        const progress = self.progress;
+                        const clipRight = 100 - (progress * 100);
+                        afterImage.style.clipPath = `inset(0 ${clipRight}% 0 0)`;
+                        sliderLine.style.left = `${progress * 100}%`;
                     }
                 });
-
-                // Reveal animation: clip the "before" image from right to left
-                tl.to(beforeImage, {
-                    clipPath: "inset(0 100% 0 0)",
-                    ease: "none",
-                    duration: 1
-                }, 0);
-
-                // Move the slider line
-                tl.to(sliderLine, {
-                    left: "0%",
-                    ease: "none",
-                    duration: 1
-                }, 0);
-
-                // Fade in the "after" label as it's revealed
-                tl.to(afterLabel, {
-                    opacity: 1,
-                    ease: "none",
-                    duration: 0.3
-                }, 0.5);
             } catch (e) {
                 console.log('Image slider init error:', e);
             }
@@ -586,6 +691,11 @@
         // Initialize both image sliders
         initImageSlider('image-slider-1');
         initImageSlider('image-slider-2');
+
+        // Refresh ScrollTrigger after all initializations
+        ScrollTrigger.refresh();
+
+        }); // end window load
     </script>
 </body>
 
